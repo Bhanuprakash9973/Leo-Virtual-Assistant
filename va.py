@@ -61,7 +61,7 @@ def execute(command):
         talk('Current time is ' + time)
     elif 'open chrome' in command:
         talk('opening Chrome')
-        chrome_path = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
+        chrome_path = r'{PATH_TO_CHROME.EXE'
         webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
         url = 'https://www.google.com'
         webbrowser.get('chrome').open(url)
