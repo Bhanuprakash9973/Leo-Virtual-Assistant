@@ -25,6 +25,16 @@ pip install speechrecognition pyttsx3 pywhatkit datetime pyautogui socket webbro
 4. Speak your command after the prompt "listening...".
 5. Leo will interpret your command and perform the appropriate action.
 
+## Additional Files
+In addition to the main script, there are two additional files used in this project:
+
+### `date1.py`
+This file contains a function that extracts and processes date-related questions. It uses the `datetime` and `re` libraries to parse the input string and provide the requested date information.
+
+### `chatgpt.py`
+This file implements a chatbot interaction using OpenAI's GPT-3.5 Turbo model. It provides the ability to have conversations with the virtual assistant by generating responses based on the user's input. The `openai` library is used to communicate with the GPT-3.5 Turbo API.
+
+
 ## Features
 ### Speech Recognition
 Leo uses the `speech_recognition` library to recognize speech input from the user. It listens for voice commands and converts them into text.
