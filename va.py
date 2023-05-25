@@ -25,81 +25,70 @@ def talk(text):
     engine.runAndWait()
 
 
-talk(f'Hello, This is virtual Assistant for {hostname}')
-
 def take_command():
-    command = None
     try:
         with sr.Microphone() as source:
-            print('listening...')
+            print('Listening...')
             listener.adjust_for_ambient_noise(source)
             voice = listener.listen(source)
             command = listener.recognize_google(voice)
             command = command.lower()
             if 'leo' in command:
                 command = command.replace('leo', '')
-    except Exception as ex:
-        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        talk('Exception occured!')
-        print(message)
-        pass
-    return command
+            return command
+    except sr.UnknownValueError:
+        talk('Sorry, I didn\'t catch that. Please try again.')
+    except sr.RequestError:
+        talk('Sorry, I\'m currently unable to process your request. Please try again later.')
 
 
-def execute(command):
+def execute_command(command):
     if 'hello' in command:
         wish_back = chatgpt.askgpt(command)
         talk(wish_back)
         print(wish_back)
     elif 'play' in command:
         song = command.replace('play', '')
-        talk('playing ' + song)
+        talk('Playing ' + song)
         pywhatkit.playonyt(song)
     elif 'time' in command:
-        time = datetime.datetime.now().strftime('%I:%M %p')
-        talk('Current time is ' + time)
+        current_time = datetime.datetime.now().strftime('%I:%M %p')
+        talk('The current time is ' + current_time)
     elif 'open chrome' in command:
-        talk('opening Chrome')
-        chrome_path = r'{PATH_TO_CHROME.EXE'
+        talk('Opening Chrome')
+        chrome_path = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
         webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
         url = 'https://www.google.com'
         webbrowser.get('chrome').open(url)
     elif 'open browser' in command:
-        talk('Opening Your Default browser..')
+        talk('Opening your default browser')
         webbrowser.open('https://www.google.com', new=1)
     elif 'search' in command:
-        task = command.replace('search for', "")
-        url = f"https://www.google.com.tr/search?q={task}"
-        talk(f'searching for {task}')
+        query = command.replace('search for', '')
+        url = f"https://www.google.com.tr/search?q={query}"
+        talk(f'Searching for {query}')
         webbrowser.open(url, new=1)
     elif 'open whatsapp' in command:
-        talk('opening whatsapp web..')
+        talk('Opening WhatsApp Web')
         pywhatkit.open_web()
     elif 'who is' in command:
         info = chatgpt.askgpt(command)
         print(info)
         talk(info)
     elif 'date' in command:
-        requestedDate = date1.get_date(command)
-        print(requestedDate)
-        talk(requestedDate)
+        requested_date = date1.get_date(command)
+        print(requested_date)
+        talk(requested_date)
     elif 'scroll down' in command:
-        talk('scrolling down')
+        talk('Scrolling down')
         pyautogui.scroll(-300)
     elif 'scroll up' in command:
-        talk('scrolling up')
+        talk('Scrolling up')
         pyautogui.scroll(300)
     elif 'enable mouse' in command:
-        thread2 = multiprocessing.Process(target=take_command())
-        thread1 = multiprocessing.Process(target=main.execute_mouse())
-        thread1.start()
-        thread2.start()
-        thread1.join()
-        thread2.join()
+        process_mouse_control()
     elif 'disable mouse' in command:
         main.stop()
-        # take_command()
     elif 'joke' in command:
         joke = chatgpt.askgpt(command)
         print(joke)
@@ -108,15 +97,25 @@ def execute(command):
         talk("Exiting the program...")
         exit()
     else:
-
         talk('Please say the command again.')
 
 
+def process_mouse_control():
+    process1 = multiprocessing.Process(target=take_command)
+    process2 = multiprocessing.Process(target=main.execute_mouse)
+    process1.start()
+    process2.start()
+    process1.join()
+    process2.join()
+
+
 def start_leo():
-    command1 = take_command()
-    print(command1)
-    execute(command=command1)
+    while True:
+        command = take_command()
+        print(command)
+        execute_command(command)
 
 
-while True:
+if __name__ == '__main__':
+    talk(f'Hello, This is virtual assistant for {hostname}')
     start_leo()
