@@ -25,7 +25,7 @@ def talk(text):
     engine.runAndWait()
 
 
-# talk(f'Hello, This is virtual Assistant for {hostname}')
+talk(f'Hello, This is virtual Assistant for {hostname}')
 
 def take_command():
     command = None
